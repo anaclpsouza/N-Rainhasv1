@@ -17,6 +17,8 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -24,6 +26,7 @@ import androidx.gridlayout.widget.GridLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class TelaJogo extends BaseActivity {
     private GridLayout gridLayout;
@@ -34,6 +37,8 @@ public class TelaJogo extends BaseActivity {
     private ImageButton btnConfig;
     private HashMap<Point, ObjectAnimator> mapaDeAnimacoes = new HashMap<>();
 
+    LinearLayout layoutRainhas;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +48,8 @@ public class TelaJogo extends BaseActivity {
         tamanho_tabuleiro = preferences.getInt("qtdRainhas", 4);
 
         jogo = new Jogo(tamanho_tabuleiro);
+        colocarRainhas(tamanho_tabuleiro);
+
 
         gridLayout = findViewById(R.id.tabuleiro);
         createChessboard(tamanho_tabuleiro);
@@ -50,10 +57,53 @@ public class TelaJogo extends BaseActivity {
         btnConfig = findViewById(R.id.btnConfigurar);
         btnReiniciar = findViewById(R.id.btnReiniciar);
 
-        btnConfig.setOnClickListener(l -> {
-            Intent intent = new Intent(getApplicationContext(), TelaConfigs.class);
-            startActivity(intent);
+        btnReiniciar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // se pa um alert dialog p confirmar
+                Intent intent = getIntent();
+                finish();
+                overridePendingTransition(0, 0); // Desabilita a animação
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
         });
+
+        btnConfig.setOnClickListener(l -> {
+            // fazer aviso de que você vai perder o jogo
+            Intent intent = new Intent(getApplicationContext(), TelaConfigs.class);
+            Bundle params = new Bundle();
+            params.putString("chamada", "TelaJogo");
+            intent.putExtras(params);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void colocarRainhas(int tamanhoTabuleiro) {
+        int qteRainhas = tamanhoTabuleiro;
+        layoutRainhas = findViewById(R.id.layoutRainhas);
+
+        for (int i = 0; i < qteRainhas; i++) {
+            ImageView rainha = new ImageView(this);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, // Largura
+                    LinearLayout.LayoutParams.MATCH_PARENT  // Altura
+            );
+
+            params.setMargins(8, 0, 8, 0);
+
+            rainha.setLayoutParams(params);
+
+            if (i % 2 != 0) {
+                rainha.setImageResource(R.drawable.rainha_marrom);
+            } else {
+                rainha.setImageResource(R.drawable.rainha_branca);
+            }
+
+            layoutRainhas.addView(rainha);
+        }
     }
 
     private void createChessboard(int tamanho_tabuleiro) {
@@ -122,17 +172,24 @@ public class TelaJogo extends BaseActivity {
                 Point p = new Point(c, r);
 
                 if (mapaDeAnimacoes.containsKey(p)) {
-                    mapaDeAnimacoes.get(p).cancel();
+                    Objects.requireNonNull(mapaDeAnimacoes.get(p)).end();
                     mapaDeAnimacoes.remove(p);
                 }
 
                 if (jogo.hasQueen(r, c)) {
                     desenharRainha(r, c);
-
+                    btnReiniciar.setEnabled(true);
                 } else {
                     limparCelula(r, c);
+                    if (jogo.getQtdRainhas() == tamanho_tabuleiro) btnReiniciar.setEnabled(false);
                 }
             }
+
+            if (layoutRainhas.getChildCount() > 0 && layoutRainhas.getChildCount() > jogo.getQtdRainhas()) {
+                layoutRainhas.removeViewAt(0);
+            }
+
+
         }
 
         for (Point p : rainhasEmConflito) {

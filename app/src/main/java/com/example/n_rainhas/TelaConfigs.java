@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import classes.Musica;
 
@@ -25,6 +26,8 @@ public class TelaConfigs extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_configs);
+
+
 
         //configurando o sharedPreferences
         SharedPreferences preferences = getSharedPreferences("nrainhas", Context.MODE_PRIVATE);
@@ -73,6 +76,12 @@ public class TelaConfigs extends BaseActivity {
         });
 
         btnVoltar.setOnClickListener(l -> {
+            Intent it = getIntent();
+
+            if (it.getExtras() != null && Objects.requireNonNull(it.getExtras()).getString("chamada").equals("TelaJogo")) {
+                Intent it2 = new Intent(TelaConfigs.this, TelaJogo.class);
+                startActivity(it2);
+            }
             finish();
         });
     }

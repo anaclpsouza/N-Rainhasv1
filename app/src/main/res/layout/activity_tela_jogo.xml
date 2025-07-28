@@ -10,10 +10,11 @@
 
     <ImageButton
         android:id="@+id/btnConfigurar"
-        android:layout_width="75dp"
-        android:layout_height="68dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:backgroundTint="@color/bege"
+        android:scaleType="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.916"
@@ -28,6 +29,8 @@
         android:layout_height="59dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/vinho"
+        android:defaultFocusHighlightEnabled="false"
+        android:enabled="false"
         android:fontFamily="@font/almendra"
         android:text="@string/reiniciar"
         android:textColor="@color/white"
@@ -58,9 +61,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/boardBorder"
         app:layout_constraintEnd_toEndOf="@+id/boardBorder"
         app:layout_constraintStart_toStartOf="@+id/boardBorder"
-        app:layout_constraintTop_toTopOf="@+id/boardBorder">
-
-    </androidx.gridlayout.widget.GridLayout>
+        app:layout_constraintTop_toTopOf="@+id/boardBorder" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
@@ -96,10 +97,10 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/unifrakturmaguntia"
         android:text="@string/rainhasRestantes"
+        android:textAlignment="center"
         android:textColor="@color/preto"
         android:textSize="28sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintHorizontal_bias="0.345"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
         app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
@@ -113,5 +114,14 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
         app:layout_constraintTop_toBottomOf="@+id/boardBorder" />
+
+    <LinearLayout
+        android:id="@+id/layoutRainhas"
+        android:layout_width="0dp" android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:gravity="center" app:layout_constraintBottom_toTopOf="@+id/boardBorder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtRainhasRestantes"></LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

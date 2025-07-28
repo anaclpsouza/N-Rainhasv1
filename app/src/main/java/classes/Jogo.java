@@ -56,7 +56,7 @@ public class Jogo {
         return tabuleiro[row][col] == 1;
     }
     public ArrayList<Point> getRainhasEmConflito() {
-        return this.rainhasEmConflito;
+        return findConflicts();
     }
     public boolean isJogoGanho() {
         return this.jogoGanho;

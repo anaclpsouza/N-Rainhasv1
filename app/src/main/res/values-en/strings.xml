@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">N-Queens</string>
+    <string name="jogar">Play</string>
+    <string name="configurar">Settings</string>
+    <string name="novoJogo">New Game</string>
+    <string name="Voltar">Back</string>
+    <string name="som">Sound:</string>
+    <string name="ativar">Enabled</string>
+    <string name="desativar">Disabled</string>
+    <string name="qtdRainhas">Number of queens</string>
+    <string name="rainhasRestantes">Queens remaining</string>
+    <string name="reiniciar">Restart</string>
+</resources>
