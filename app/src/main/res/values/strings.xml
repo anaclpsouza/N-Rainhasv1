@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">N-Rainhas</string>
+    <string name="jogar">Jogar</string>
+    <string name="configurar">Configurar Jogo</string>
+    <string name="novoJogo">Novo Jogo</string>
+
+    <string name="Voltar">Voltar</string>
+    <string name="som">Som: </string>
+    <string name="ativar">Ativado</string>
+    <string name="desativar">Desativado</string>
+    <string name="qtdRainhas">Quantidade de rainhas: </string>
+    <string name="rainhasRestantes">Rainhas restantes: </string>
+    <string name="reiniciar">Reiniciar</string>
+</resources>
