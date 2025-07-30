@@ -40,6 +40,7 @@
         android:layout_marginStart="24dp"
         android:fontFamily="@font/almendra"
         android:text="@string/recorde"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/boardBorder"
         app:layout_constraintTop_toTopOf="@+id/boardBorder" />

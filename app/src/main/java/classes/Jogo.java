@@ -1,18 +1,22 @@
 package classes;
 import android.graphics.Point;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Jogo {
+public class Jogo implements Serializable {
 
     private final int tamanhoDoTab;
-    private final int[][] tabuleiro; // A matriz que representa o jogo: 0 = vazio, 1 = rainha
+    private final int[][] tabuleiro; // 0 = vazio, 1 = rainha
     private int qtdRainhas;
 
-    // Variáveis que guardam o estado atual do jogo
+    //estado atual do jogo
     private boolean jogoGanho = false;
+
+    //retornar para ser utilizado na tela
     private ArrayList<Point> rainhasEmConflito = new ArrayList<>();
 
     public Jogo(int tamanho) {
@@ -49,9 +53,6 @@ public class Jogo {
         this.jogoGanho = (qtdRainhas == 0) && this.rainhasEmConflito.isEmpty();
     }
 
-    // --- MÉTODOS DE CONSULTA (GETTERS) ---
-    // A tela usará estes métodos para saber como se desenhar.
-
     public boolean hasQueen(int row, int col) {
         return tabuleiro[row][col] == 1;
     }
@@ -64,7 +65,6 @@ public class Jogo {
     public int getTamanhoDoTab() {
         return tamanhoDoTab;
     }
-
     public int getQtdRainhas(){return qtdRainhas;}
 
     private ArrayList<Point> findConflicts() {

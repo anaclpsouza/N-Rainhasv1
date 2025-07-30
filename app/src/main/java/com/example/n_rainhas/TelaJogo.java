@@ -46,37 +46,60 @@ public class TelaJogo extends BaseActivity {
     private Chronometer cronometro;
     long recorde;
     private boolean tempoRodando = false;
-
     TextView txtRecorde;
     SharedPreferences preferences;
+
+
+    //salva o estado da aplicação
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        cronometro.stop();
+
+        outState.putSerializable("ESTADO_JOGO", jogo);
+        outState.putLong("TEMPO_CRONOMETRO", cronometro.getBase());
+        outState.putBoolean("CRONOMETRO_RODANDO", tempoRodando);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_jogo);
 
-        inicializarContadorDeRainhas();
-
         preferences = getSharedPreferences("nrainhas", Context.MODE_PRIVATE);
         tamanho_tabuleiro = preferences.getInt("qtdRainhas", 4);
         recorde = preferences.getLong("recorde_" + tamanho_tabuleiro, Long.MAX_VALUE);
-
+        cronometro = findViewById(R.id.cronometro);
 
         txtRecorde = findViewById(R.id.txtRecorde);
         txtRecorde.setText(getString(R.string.recorde) + ": " + ((recorde == Long.MAX_VALUE) ? "Sem Recorde" : formatarTempo(recorde)));
 
-        jogo = new Jogo(tamanho_tabuleiro);
-        
-        atualizarContadorDeRainhas(jogo.getQtdRainhas());
+        //recupera o estado da aplicação
+        if (savedInstanceState != null) {
+            jogo = (Jogo) savedInstanceState.getSerializable("ESTADO_JOGO");
 
+            long tempoSalvo = savedInstanceState.getLong("TEMPO_CRONOMETRO");
+            boolean estavaRodando = savedInstanceState.getBoolean("CRONOMETRO_RODANDO");
+            cronometro.setBase(tempoSalvo);
+            tempoRodando = estavaRodando;
+
+            if (tempoRodando) {
+                cronometro.start();
+            }
+
+        } else {
+            jogo = new Jogo(tamanho_tabuleiro);
+        }
+
+
+        inicializarContadorDeRainhas();
+        atualizarContadorDeRainhas(jogo.getQtdRainhas());
 
         gridLayout = findViewById(R.id.tabuleiro);
         createChessboard(tamanho_tabuleiro);
 
         btnConfig = findViewById(R.id.btnConfigurar);
         btnReiniciar = findViewById(R.id.btnReiniciar);
-
-        cronometro = findViewById(R.id.cronometro);
 
         btnReiniciar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,13 +152,15 @@ public class TelaJogo extends BaseActivity {
             });
            builer.show();
         });
+
+       //atualiza a tela após mudança de estado
+        atualizarTela();
     }
 
     private void atualizarContadorDeRainhas(int quantidadeParaMostrar) {
         for (int i = 0; i < listaRainhasDisponiveis.size(); i++) {
             ImageView rainha = listaRainhasDisponiveis.get(i);
 
-            // Se o índice for menor que a quantidade a mostrar, a rainha fica visível
             if (i < quantidadeParaMostrar) {
                 rainha.setVisibility(View.VISIBLE);
             } else {
@@ -155,8 +180,8 @@ public class TelaJogo extends BaseActivity {
         listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_8));
     }
 
-    private void createChessboard(int tamanho_tabuleiro) {
 
+    private void createChessboard(int tamanho_tabuleiro) {
         gridLayout.setColumnCount(tamanho_tabuleiro);
         gridLayout.setRowCount(tamanho_tabuleiro);
         views = new View[tamanho_tabuleiro][tamanho_tabuleiro];
@@ -272,18 +297,13 @@ public class TelaJogo extends BaseActivity {
 
     private String formatarTempo(long milissegundos) {
         long segundos = milissegundos / 1000;
-
         long minutos = segundos / 60;
-
         long segundosRestantes = segundos % 60;
-
         return String.format("%02d:%02d", minutos, segundosRestantes);
     }
 
     private void atualizarTela() {
-
         if (jogo.isJogoGanho()) {
-            // mensagem de vitória
             return;
         }
 
@@ -297,7 +317,6 @@ public class TelaJogo extends BaseActivity {
                     Objects.requireNonNull(mapaDeAnimacoes.get(p)).end();
                     mapaDeAnimacoes.remove(p);
                 }
-
                 if (jogo.hasQueen(r, c)) {
                     desenharRainha(r, c);
                     btnReiniciar.setEnabled(true);
@@ -306,9 +325,7 @@ public class TelaJogo extends BaseActivity {
                     if (jogo.getQtdRainhas() == tamanho_tabuleiro) btnReiniciar.setEnabled(false);
                 }
             }
-
             atualizarContadorDeRainhas(jogo.getQtdRainhas());
-
         }
 
         for (Point p : rainhasEmConflito) {

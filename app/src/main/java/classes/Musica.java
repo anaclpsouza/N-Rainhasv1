@@ -26,9 +26,8 @@ public class Musica extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        // Cria o MediaPlayer apenas uma vez, quando o serviço é iniciado.
         mp = MediaPlayer.create(getApplicationContext(), R.raw.musica_classica);
-        mp.setLooping(true); // Toca em loop
+        mp.setLooping(true);
     }
 
     @Override
@@ -48,37 +47,32 @@ public class Musica extends Service {
                     break;
             }
         }
-        // START_NOT_STICKY garante que o serviço não reinicie sozinho se for morto pelo sistema.
         return START_NOT_STICKY;
     }
 
     private void play() {
-        // Verifica se o MediaPlayer existe e não está tocando antes de dar start.
         if (mp != null && !mp.isPlaying()) {
             mp.start();
         }
     }
 
     private void pause() {
-        // Pausa a música se ela estiver tocando.
         if (mp != null && mp.isPlaying()) {
             mp.pause();
         }
     }
 
     private void stop() {
-        // Para a música, libera os recursos e encerra o serviço.
         if (mp != null) {
             mp.stop();
             mp.release();
             mp = null;
         }
-        stopSelf(); // Encerra o serviço.
+        stopSelf();
     }
 
     @Override
     public void onDestroy() {
-        // Garante que os recursos sejam liberados ao destruir o serviço.
         if (mp != null) {
             mp.release();
             mp = null;

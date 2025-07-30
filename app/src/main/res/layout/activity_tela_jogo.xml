@@ -218,6 +218,7 @@
         android:fontFamily="@font/almendra"
         android:text="@string/recorde"
         android:textAlignment="textStart"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toStartOf="@+id/btnConfigurar"
