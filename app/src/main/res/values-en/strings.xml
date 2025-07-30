@@ -11,4 +11,5 @@
     <string name="qtdRainhas">Number of queens</string>
     <string name="rainhasRestantes">Queens remaining</string>
     <string name="reiniciar">Restart</string>
+    <string name="recorde">Record</string>
 </resources>

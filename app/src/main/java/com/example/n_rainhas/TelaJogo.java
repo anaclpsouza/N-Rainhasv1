@@ -1,6 +1,8 @@
 package com.example.n_rainhas;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
@@ -12,13 +14,17 @@ import classes.Jogo;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -36,19 +42,32 @@ public class TelaJogo extends BaseActivity {
     private Button btnReiniciar;
     private ImageButton btnConfig;
     private HashMap<Point, ObjectAnimator> mapaDeAnimacoes = new HashMap<>();
+    private ArrayList<ImageView> listaRainhasDisponiveis = new ArrayList<>();
+    private Chronometer cronometro;
+    long recorde;
+    private boolean tempoRodando = false;
 
-    LinearLayout layoutRainhas;
+    TextView txtRecorde;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_jogo);
 
-        SharedPreferences preferences = getSharedPreferences("nrainhas", Context.MODE_PRIVATE);
+        inicializarContadorDeRainhas();
+
+        preferences = getSharedPreferences("nrainhas", Context.MODE_PRIVATE);
         tamanho_tabuleiro = preferences.getInt("qtdRainhas", 4);
+        recorde = preferences.getLong("recorde_" + tamanho_tabuleiro, Long.MAX_VALUE);
+
+
+        txtRecorde = findViewById(R.id.txtRecorde);
+        txtRecorde.setText(getString(R.string.recorde) + ": " + ((recorde == Long.MAX_VALUE) ? "Sem Recorde" : formatarTempo(recorde)));
 
         jogo = new Jogo(tamanho_tabuleiro);
-        colocarRainhas(tamanho_tabuleiro);
+        
+        atualizarContadorDeRainhas(jogo.getQtdRainhas());
 
 
         gridLayout = findViewById(R.id.tabuleiro);
@@ -57,53 +76,83 @@ public class TelaJogo extends BaseActivity {
         btnConfig = findViewById(R.id.btnConfigurar);
         btnReiniciar = findViewById(R.id.btnReiniciar);
 
+        cronometro = findViewById(R.id.cronometro);
+
         btnReiniciar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // se pa um alert dialog p confirmar
-                Intent intent = getIntent();
-                finish();
-                overridePendingTransition(0, 0); // Desabilita a animação
-                startActivity(intent);
-                overridePendingTransition(0, 0);
+                AlertDialog.Builder builer = new AlertDialog.Builder(TelaJogo.this);
+                builer.setTitle("Confirmar ação");
+                builer.setMessage("Seu progresso no jogo será perdido, tem certeza?");
+                builer.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = getIntent();
+                        finish();
+                        overridePendingTransition(0, 0); // Desabilita a animação
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                });
+                builer.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // nao faz nothing
+                    }
+                });
+                builer.show();
             }
         });
 
         btnConfig.setOnClickListener(l -> {
             // fazer aviso de que você vai perder o jogo
-            Intent intent = new Intent(getApplicationContext(), TelaConfigs.class);
-            Bundle params = new Bundle();
-            params.putString("chamada", "TelaJogo");
-            intent.putExtras(params);
-            startActivity(intent);
-            finish();
+            AlertDialog.Builder builer = new AlertDialog.Builder(TelaJogo.this);
+            builer.setTitle("Confirmar ação");
+            builer.setMessage("Seu progresso no jogo não será salvo, tem certeza?");
+            builer.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(getApplicationContext(), TelaConfigs.class);
+                    Bundle params = new Bundle();
+                    params.putString("chamada", "TelaJogo");
+                    intent.putExtras(params);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            builer.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // nao faz nothing
+                }
+            });
+           builer.show();
         });
     }
 
-    private void colocarRainhas(int tamanhoTabuleiro) {
-        int qteRainhas = tamanhoTabuleiro;
-        layoutRainhas = findViewById(R.id.layoutRainhas);
+    private void atualizarContadorDeRainhas(int quantidadeParaMostrar) {
+        for (int i = 0; i < listaRainhasDisponiveis.size(); i++) {
+            ImageView rainha = listaRainhasDisponiveis.get(i);
 
-        for (int i = 0; i < qteRainhas; i++) {
-            ImageView rainha = new ImageView(this);
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, // Largura
-                    LinearLayout.LayoutParams.MATCH_PARENT  // Altura
-            );
-
-            params.setMargins(8, 0, 8, 0);
-
-            rainha.setLayoutParams(params);
-
-            if (i % 2 != 0) {
-                rainha.setImageResource(R.drawable.rainha_marrom);
+            // Se o índice for menor que a quantidade a mostrar, a rainha fica visível
+            if (i < quantidadeParaMostrar) {
+                rainha.setVisibility(View.VISIBLE);
             } else {
-                rainha.setImageResource(R.drawable.rainha_branca);
+                rainha.setVisibility(View.GONE);
             }
-
-            layoutRainhas.addView(rainha);
         }
+    }
+
+    private void inicializarContadorDeRainhas() {
+        listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_1));
+        listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_2));
+        listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_3));
+        listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_4));
+        listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_5));
+        listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_6));
+        listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_7));
+        listaRainhasDisponiveis.add(findViewById(R.id.rainha_disponivel_8));
     }
 
     private void createChessboard(int tamanho_tabuleiro) {
@@ -146,16 +195,89 @@ public class TelaJogo extends BaseActivity {
     }
 
     private void jogar(int row, int col){
+        if (!tempoRodando) {
+            cronometro.start();
+            tempoRodando = true;
+        }
+
         if(!jogo.jogada(row, col)){
             // rainhas esgotadas
+            cronometro.stop();
+            AlertDialog.Builder builder = new AlertDialog.Builder(TelaJogo.this);
+            builder.setTitle("Você perdeu! Limite atingido");
+            builder.setMessage("Deseja jogar novamente?");
+            builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = getIntent();
+                    finish();
+                    overridePendingTransition(0, 0); // Desabilita a animação
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                }
+            });
+            builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(TelaJogo.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            builder.show();
         }
 
         else if (jogo.isJogoGanho()) {
-            // mensagem de vitória
+            String tituloDialogo;
+            String mensagemDialogo;
+            cronometro.stop();
+            long tempoDecorridoMs = SystemClock.elapsedRealtime() - cronometro.getBase();
+            if (tempoDecorridoMs < recorde) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putLong("recorde_" + tamanho_tabuleiro, tempoDecorridoMs);
+                editor.apply();
+
+                tituloDialogo = "Novo Recorde!";
+                mensagemDialogo = "Você venceu com o tempo de " + formatarTempo(tempoDecorridoMs) + "!\n\nDeseja jogar novamente?";
+                txtRecorde.setText(formatarTempo(tempoDecorridoMs));
+            } else {
+                tituloDialogo = "Você Ganhou!";
+                mensagemDialogo = "Seu tempo: " + formatarTempo(tempoDecorridoMs) +
+                        "\nRecorde: " + formatarTempo(recorde) +
+                        "\n\nDeseja jogar novamente?";
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(TelaJogo.this);
+            builder.setTitle(tituloDialogo);
+            builder.setMessage(mensagemDialogo);
+
+            builder.setPositiveButton("Jogar Novamente", (dialog, which) -> {
+                Intent intent = getIntent();
+                finish();
+                overridePendingTransition(0, 0); // Desabilita a animação
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            });
+
+            builder.setNegativeButton("Sair", (dialog, which) -> {
+                finish();
+            });
+
+            builder.show();
             return;
         }
 
         atualizarTela();
+    }
+
+    private String formatarTempo(long milissegundos) {
+        long segundos = milissegundos / 1000;
+
+        long minutos = segundos / 60;
+
+        long segundosRestantes = segundos % 60;
+
+        return String.format("%02d:%02d", minutos, segundosRestantes);
     }
 
     private void atualizarTela() {
@@ -185,10 +307,7 @@ public class TelaJogo extends BaseActivity {
                 }
             }
 
-            if (layoutRainhas.getChildCount() > 0 && layoutRainhas.getChildCount() > jogo.getQtdRainhas()) {
-                layoutRainhas.removeViewAt(0);
-            }
-
+            atualizarContadorDeRainhas(jogo.getQtdRainhas());
 
         }
 

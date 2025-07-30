@@ -11,4 +11,6 @@
     <string name="qtdRainhas">Quantidade de rainhas: </string>
     <string name="rainhasRestantes">Rainhas restantes: </string>
     <string name="reiniciar">Reiniciar</string>
+
+    <string name="recorde">Recorde:</string>
 </resources>

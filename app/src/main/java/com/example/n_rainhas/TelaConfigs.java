@@ -27,8 +27,6 @@ public class TelaConfigs extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tela_configs);
 
-
-
         //configurando o sharedPreferences
         SharedPreferences preferences = getSharedPreferences("nrainhas", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
