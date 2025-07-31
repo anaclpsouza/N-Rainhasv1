@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bege"
+    tools:context=".TelaJogo">
+
+    <View
+        android:id="@+id/boardBorder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="W,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/tabuleiro"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="1dp"
+        android:background="@color/vermelho"
+        app:layout_constraintBottom_toBottomOf="@+id/boardBorder"
+        app:layout_constraintEnd_toEndOf="@+id/boardBorder"
+        app:layout_constraintStart_toStartOf="@+id/boardBorder"
+        app:layout_constraintTop_toTopOf="@+id/boardBorder" />
+
+
+    <TextView
+        android:id="@+id/txtRecorde"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:fontFamily="@font/almendra"
+        android:text="@string/recorde"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/boardBorder"
+        app:layout_constraintTop_toTopOf="@+id/boardBorder" />
+
+    <TextView
+        android:id="@+id/txtRainhasRestantes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/unifrakturmaguntia"
+        android:text="@string/rainhasRestantes"
+        android:textAlignment="center"
+        android:textColor="@color/preto"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/boardBorder"
+        app:layout_constraintTop_toBottomOf="@+id/txtRecorde" />
+
+    <LinearLayout
+        android:id="@+id/layoutRainhas"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/boardBorder"
+        app:layout_constraintTop_toBottomOf="@+id/txtRainhasRestantes">
+
+        <ImageView
+            android:id="@+id/rainha_disponivel_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:src="@drawable/rainha_branca"
+            android:visibility="gone"
+            tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/rainha_disponivel_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:src="@drawable/rainha_marrom"
+            android:visibility="gone"
+            tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/rainha_disponivel_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:src="@drawable/rainha_branca"
+            android:visibility="gone"
+            tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/rainha_disponivel_4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:src="@drawable/rainha_marrom"
+            android:visibility="gone"
+            tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/rainha_disponivel_5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:src="@drawable/rainha_branca"
+            android:visibility="gone"
+            tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/rainha_disponivel_6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:src="@drawable/rainha_marrom"
+            android:visibility="gone"
+            tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/rainha_disponivel_7"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:src="@drawable/rainha_branca"
+            android:visibility="gone"
+            tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/rainha_disponivel_8"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:src="@drawable/rainha_marrom"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <Chronometer
+        android:id="@+id/cronometro"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/belleza"
+        android:textAlignment="center"
+        android:textColor="@color/preto"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/boardBorder"
+        app:layout_constraintTop_toBottomOf="@+id/layoutRainhas" />
+
+    <ImageButton
+        android:id="@+id/btnConfigurar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/bege"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="@+id/btnReiniciar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnReiniciar"
+        app:srcCompat="@drawable/engrenagem" />
+
+    <Button
+        android:id="@+id/btnReiniciar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/vinho"
+        android:enabled="false"
+        android:fontFamily="@font/almendra"
+        android:text="@string/reiniciar"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/boardBorder"
+        app:layout_constraintEnd_toStartOf="@+id/btnConfigurar"
+        app:layout_constraintStart_toEndOf="@+id/boardBorder" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

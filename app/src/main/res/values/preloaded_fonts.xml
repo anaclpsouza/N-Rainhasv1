@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/almendra</item>
+        <item>@font/belleza</item>
+        <item>@font/eagle_lake</item>
+        <item>@font/montez</item>
+        <item>@font/sniglet</item>
+    </array>
+</resources>
